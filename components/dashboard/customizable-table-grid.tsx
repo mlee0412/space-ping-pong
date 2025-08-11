@@ -15,22 +15,30 @@ export default function CustomizableTableGrid() {
   const { tables, isEditMode, updateLayout } = useTableStore()
 
   const layouts = useMemo(() => {
-    const createLayoutForBreakpoint = (maxWidth: number) => {
+    const createLayoutForBreakpoint = (maxCols: number) => {
       return tables.map((table) => {
-        // Reduce width for wider tables on smaller screens
         let adjustedWidth = table.layout_w
-        if (table.layout_w === 4 && maxWidth < 14) {
-          // For tables that are 4 units wide, scale them down
-          if (maxWidth <= 6)
-            adjustedWidth = 3 // Small screens
-          else if (maxWidth <= 10) adjustedWidth = 3 // iPad/tablet screens
+        let adjustedX = table.layout_x
+
+        if (table.layout_w >= 3) {
+          if (maxCols <= 6) {
+            // Small screens: reduce wide tables to 2 units
+            adjustedWidth = 2
+          } else if (maxCols <= 10) {
+            // iPad/tablet: reduce wide tables to 2 units
+            adjustedWidth = 2
+          }
+        }
+
+        if (adjustedX + adjustedWidth > maxCols) {
+          adjustedX = Math.max(0, maxCols - adjustedWidth)
         }
 
         return {
           i: table.id,
-          x: table.layout_x,
+          x: adjustedX,
           y: table.layout_y,
-          w: Math.min(adjustedWidth, maxWidth), // Ensure width doesn't exceed available columns
+          w: adjustedWidth,
           h: table.layout_h,
         }
       })
