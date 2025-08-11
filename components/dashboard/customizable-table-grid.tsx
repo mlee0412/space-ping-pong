@@ -17,10 +17,10 @@ export default function CustomizableTableGrid() {
   const layouts = useMemo(() => {
     const createLayoutForBreakpoint = (maxCols: number) => {
       return tables.map((table) => {
-        let adjustedWidth = table.layout_w
+        let adjustedWidth = table.table_type === "ping_pong" ? 2 : table.layout_w
         let adjustedX = table.layout_x
 
-        if (table.layout_w >= 3 && maxCols <= 6) {
+        if (adjustedWidth >= 3 && maxCols <= 6) {
           // Small screens: reduce wide tables to 2 units
           adjustedWidth = 2
         }
@@ -44,14 +44,14 @@ export default function CustomizableTableGrid() {
         i: table.id,
         x: table.layout_x,
         y: table.layout_y,
-        w: table.layout_w,
+        w: table.table_type === "ping_pong" ? 2 : table.layout_w,
         h: table.layout_h,
       })),
       md: tables.map((table) => ({
         i: table.id,
         x: table.layout_x,
         y: table.layout_y,
-        w: table.layout_w,
+        w: table.table_type === "ping_pong" ? 2 : table.layout_w,
         h: table.layout_h,
       })),
       sm: createLayoutForBreakpoint(6), // Small tablet
