@@ -26,10 +26,10 @@ export default function TableCard({ table }: { table: TableWithSessions }) {
 
   const displayName = useMemo(() => {
     if (table.table_type === "ping_pong") {
-      return `Ping Pong Table ${table.name.replace("P", "")}`
+      return `Ping Pong ${table.name.replace("P", "")}`
     }
     if (table.table_type === "dining") {
-      return `Dining Table ${table.name.replace("D", "")}`
+      return `Dining ${table.name.replace("D", "")}`
     }
     return table.name
   }, [table.name, table.table_type])
@@ -47,7 +47,7 @@ export default function TableCard({ table }: { table: TableWithSessions }) {
   return (
     <Card
       className={cn(
-        "bg-black/50 backdrop-blur-xl border-2 transition-all duration-500 h-full flex flex-col",
+        "bg-black/50 backdrop-blur-xl border-2 transition-all duration-500 h-full flex flex-col p-2",
         statusStyles[cardStatus],
         isEditMode && "shadow-glow-cyan",
       )}
@@ -55,13 +55,15 @@ export default function TableCard({ table }: { table: TableWithSessions }) {
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
     >
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
-        <CardTitle className="text-sm sm:text-base md:text-xl font-bold text-glow-cyan">{displayName}</CardTitle>
+      <CardHeader className="flex-row items-center justify-between space-y-0 pb-1 p-1 relative">
+        <CardTitle className="text-xs sm:text-sm md:text-base font-bold text-glow-cyan truncate">
+          {displayName}
+        </CardTitle>
         {isEditMode && (
-          <GripVertical className="drag-handle absolute top-2 right-2 cursor-move text-muted-foreground h-6 w-6 transition-all hover:text-white hover:scale-125" />
+          <GripVertical className="drag-handle absolute top-1 right-1 cursor-move text-muted-foreground h-5 w-5 transition-all hover:text-white hover:scale-125" />
         )}
         <span
-          className={cn("text-sm font-semibold uppercase px-2 py-1 rounded-full", {
+          className={cn("text-xs font-semibold uppercase px-2 py-0.5 rounded-full shrink-0", {
             "bg-status-inactive/20 text-status-inactive": cardStatus === "inactive",
             "bg-status-active/20 text-status-active": cardStatus === "active",
             "bg-status-warning/20 text-status-warning": cardStatus === "warning",
@@ -71,17 +73,17 @@ export default function TableCard({ table }: { table: TableWithSessions }) {
           {cardStatus}
         </span>
       </CardHeader>
-      <CardContent className="flex-grow flex flex-col justify-center">
-        <div className="text-3xl sm:text-4xl md:text-5xl font-mono font-bold text-center my-2 md:my-4 text-glow-magenta">
+      <CardContent className="flex-grow flex flex-col justify-center items-center p-1">
+        <div className="text-2xl sm:text-3xl md:text-5xl font-mono font-bold text-center text-glow-magenta">
           {timeDisplay}
         </div>
-        <div className="flex justify-between text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <Users className="h-4 w-4" />
+        <div className="flex justify-between w-full text-muted-foreground mt-auto text-xs">
+          <div className="flex items-center gap-1">
+            <Users className="h-3 w-3" />
             <span>{activeSession?.guest_count ?? "-"}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Server className="h-4 w-4" />
+          <div className="flex items-center gap-1">
+            <Server className="h-3 w-3" />
             <span>{activeSession?.server_name ?? "N/A"}</span>
           </div>
         </div>
