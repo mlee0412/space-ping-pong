@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --radius: 0.5rem;
+
+    /* Neon & Status Colors */
+    --neon-cyan: 180 100% 50%;
+    --neon-magenta: 300 100% 50%;
+    --status-inactive: 217 91% 60%; /* Blue */
+    --status-active: 139 71% 42%; /* Green */
+    --status-warning: 45 100% 51%; /* Yellow */
+    --status-overtime: 0 84% 60%; /* Red */
+  }
+
+  .dark {
+    /* Keep the same variables for dark mode as it's dark-first */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Orbitron", sans-serif; /* Example digital font */
+  }
+}
+
+/* React Grid Layout Styles - Embedded to fix MIME type error */
+.react-grid-layout {
+  position: relative;
+  transition: height 200ms ease;
+}
+.react-grid-item {
+  transition: all 200ms ease;
+  transition-property: left, top;
+}
+.react-grid-item.cssTransforms {
+  transition-property: transform;
+}
+.react-grid-item.resizing {
+  z-index: 1;
+  will-change: width, height;
+}
+.react-grid-item.react-draggable-dragging {
+  transition: none;
+  z-index: 3;
+  will-change: transform;
+}
+.react-grid-item.react-grid-placeholder {
+  background: hsla(var(--neon-cyan), 0.2);
+  border-radius: var(--radius);
+  border: 1px dashed hsl(var(--neon-cyan));
+  transition-duration: 100ms;
+  z-index: 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.react-grid-item > .react-resizable-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  bottom: 0;
+  right: 0;
+  cursor: se-resize;
+}
+.react-grid-item > .react-resizable-handle::after {
+  content: "";
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid hsla(var(--neon-cyan), 0.7);
+  border-bottom: 2px solid hsla(var(--neon-cyan), 0.7);
+}
