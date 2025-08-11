@@ -15,6 +15,27 @@ export default function CustomizableTableGrid() {
   const { tables, isEditMode, updateLayout } = useTableStore()
 
   const layouts = useMemo(() => {
+    const createLayoutForBreakpoint = (maxWidth: number) => {
+      return tables.map((table) => {
+        // Reduce width for wider tables on smaller screens
+        let adjustedWidth = table.layout_w
+        if (table.layout_w === 4 && maxWidth < 14) {
+          // For tables that are 4 units wide, scale them down
+          if (maxWidth <= 6)
+            adjustedWidth = 3 // Small screens
+          else if (maxWidth <= 10) adjustedWidth = 3 // iPad/tablet screens
+        }
+
+        return {
+          i: table.id,
+          x: table.layout_x,
+          y: table.layout_y,
+          w: Math.min(adjustedWidth, maxWidth), // Ensure width doesn't exceed available columns
+          h: table.layout_h,
+        }
+      })
+    }
+
     return {
       lg: tables.map((table) => ({
         i: table.id,
@@ -23,12 +44,16 @@ export default function CustomizableTableGrid() {
         w: table.layout_w,
         h: table.layout_h,
       })),
+      md: createLayoutForBreakpoint(10), // iPad/tablet
+      sm: createLayoutForBreakpoint(6), // Small tablet
+      xs: createLayoutForBreakpoint(4), // Phone
+      xxs: createLayoutForBreakpoint(2), // Very small phone
     }
   }, [tables])
 
-  const onLayoutChange = (newLayout: Layout[]) => {
+  const onLayoutChange = (newLayout: Layout[], allLayouts: { [key: string]: Layout[] }) => {
     if (isEditMode) {
-      updateLayout(newLayout)
+      updateLayout(allLayouts.lg || newLayout)
     }
   }
 
