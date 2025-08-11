@@ -20,14 +20,9 @@ export default function CustomizableTableGrid() {
         let adjustedWidth = table.layout_w
         let adjustedX = table.layout_x
 
-        if (table.layout_w >= 3) {
-          if (maxCols <= 6) {
-            // Small screens: reduce wide tables to 2 units
-            adjustedWidth = 2
-          } else if (maxCols <= 10) {
-            // iPad/tablet: reduce wide tables to 2 units
-            adjustedWidth = 2
-          }
+        if (table.layout_w >= 3 && maxCols <= 6) {
+          // Small screens: reduce wide tables to 2 units
+          adjustedWidth = 2
         }
 
         if (adjustedX + adjustedWidth > maxCols) {
@@ -52,7 +47,13 @@ export default function CustomizableTableGrid() {
         w: table.layout_w,
         h: table.layout_h,
       })),
-      md: createLayoutForBreakpoint(10), // iPad/tablet
+      md: tables.map((table) => ({
+        i: table.id,
+        x: table.layout_x,
+        y: table.layout_y,
+        w: table.layout_w,
+        h: table.layout_h,
+      })),
       sm: createLayoutForBreakpoint(6), // Small tablet
       xs: createLayoutForBreakpoint(4), // Phone
       xxs: createLayoutForBreakpoint(2), // Very small phone
@@ -78,12 +79,14 @@ export default function CustomizableTableGrid() {
       className="layout"
       layouts={layouts}
       breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-      cols={{ lg: 14, md: 10, sm: 6, xs: 4, xxs: 2 }}
+      cols={{ lg: 14, md: 12, sm: 6, xs: 4, xxs: 2 }}
       rowHeight={100}
       isDraggable={isEditMode}
       isResizable={isEditMode}
       onLayoutChange={onLayoutChange}
       draggableHandle=".drag-handle"
+      margin={[4, 4]}
+      containerPadding={[8, 8]}
     >
       {tables.map((table) => (
         <div key={table.id}>
