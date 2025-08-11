@@ -24,16 +24,6 @@ export default function TableCard({ table }: { table: TableWithSessions }) {
   const cardStatus = activeSession ? status : "inactive"
   const pressTimer = useRef<NodeJS.Timeout>()
 
-  const displayName = useMemo(() => {
-    if (table.table_type === "ping_pong") {
-      return `Ping Pong ${table.name.replace("P", "")}`
-    }
-    if (table.table_type === "dining") {
-      return `Dining ${table.name.replace("D", "")}`
-    }
-    return table.name
-  }, [table.name, table.table_type])
-
   const handlePointerDown = () => {
     pressTimer.current = setTimeout(() => {
       if (!isEditMode) toggleEditMode()
@@ -56,9 +46,7 @@ export default function TableCard({ table }: { table: TableWithSessions }) {
       onPointerLeave={handlePointerUp}
     >
       <CardHeader className="flex-row items-center justify-between space-y-0 pb-1 p-1 relative">
-        <CardTitle className="text-xs sm:text-sm md:text-base font-bold text-glow-cyan truncate">
-          {displayName}
-        </CardTitle>
+        <CardTitle className="text-sm sm:text-base font-bold text-glow-cyan truncate">{table.name}</CardTitle>
         {isEditMode && (
           <GripVertical className="drag-handle absolute top-1 right-1 cursor-move text-muted-foreground h-5 w-5 transition-all hover:text-white hover:scale-125" />
         )}
@@ -73,21 +61,35 @@ export default function TableCard({ table }: { table: TableWithSessions }) {
           {cardStatus}
         </span>
       </CardHeader>
-      <CardContent className="flex-grow flex flex-col justify-center items-center p-1">
-        <div className="text-2xl sm:text-3xl md:text-5xl font-mono font-bold text-center text-glow-magenta">
-          {timeDisplay}
-        </div>
-        <div className="flex justify-between w-full text-muted-foreground mt-auto text-xs">
-          <div className="flex items-center gap-1">
-            <Users className="h-3 w-3" />
-            <span>{activeSession?.guest_count ?? "-"}</span>
+
+      {table.table_type === "ping_pong" ? (
+        <CardContent className="flex-grow flex flex-col justify-center items-center p-1">
+          <div className="text-2xl sm:text-3xl md:text-5xl font-mono font-bold text-center text-glow-magenta">
+            {timeDisplay}
           </div>
-          <div className="flex items-center gap-1">
-            <Server className="h-3 w-3" />
+          <div className="flex justify-between w-full text-muted-foreground mt-auto text-xs">
+            <div className="flex items-center gap-1">
+              <Users className="h-3 w-3" />
+              <span>{activeSession?.guest_count ?? "-"}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Server className="h-3 w-3" />
+              <span>{activeSession?.server_name ?? "N/A"}</span>
+            </div>
+          </div>
+        </CardContent>
+      ) : (
+        <CardContent className="flex-grow flex flex-col justify-center items-center p-1 text-muted-foreground gap-2">
+          <div className="flex items-center gap-2 text-lg">
+            <Users className="h-5 w-5" />
+            <span className="font-bold text-xl text-white">{activeSession?.guest_count ?? "-"}</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm">
+            <Server className="h-4 w-4" />
             <span>{activeSession?.server_name ?? "N/A"}</span>
           </div>
-        </div>
-      </CardContent>
+        </CardContent>
+      )}
     </Card>
   )
 }
