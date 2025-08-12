@@ -15,50 +15,74 @@ export default function CustomizableTableGrid() {
   const { tables, isEditMode, updateLayout } = useTableStore()
 
   const layouts = useMemo(() => {
-    const createLayoutForBreakpoint = (maxCols: number) => {
-      return tables.map((table) => {
-        let adjustedWidth = table.table_type === "ping_pong" ? 2 : table.layout_w
-        let adjustedX = table.layout_x
-
-        if (adjustedWidth >= 3 && maxCols <= 6) {
-          // Small screens: reduce wide tables to 2 units
-          adjustedWidth = 2
-        }
-
-        if (adjustedX + adjustedWidth > maxCols) {
-          adjustedX = Math.max(0, maxCols - adjustedWidth)
-        }
-
-        return {
-          i: table.id,
-          x: adjustedX,
-          y: table.layout_y,
-          w: adjustedWidth,
-          h: table.layout_h,
-        }
+    const createCompactLayout = (maxCols: number, allowReflow = true) => {
+      const sortedTables = [...tables].sort((a, b) => {
+        // Sort by y position first, then x position for consistent ordering
+        if (a.layout_y !== b.layout_y) return a.layout_y - b.layout_y
+        return a.layout_x - b.layout_x
       })
+
+      if (!allowReflow) {
+        // For edit mode, preserve original positions but adjust for screen size
+        return sortedTables.map((table) => {
+          let adjustedWidth = table.table_type === "ping_pong" ? 2 : table.layout_w
+          let adjustedX = table.layout_x
+
+          if (adjustedWidth >= 3 && maxCols <= 6) {
+            adjustedWidth = 2
+          }
+
+          if (adjustedX + adjustedWidth > maxCols) {
+            adjustedX = Math.max(0, maxCols - adjustedWidth)
+          }
+
+          return {
+            i: table.id,
+            x: adjustedX,
+            y: table.layout_y,
+            w: adjustedWidth,
+            h: table.layout_h,
+          }
+        })
+      }
+
+      // Compact layout algorithm - reflow tables to eliminate gaps
+      const layout: Layout[] = []
+      let currentRow = 0
+      let currentCol = 0
+
+      for (const table of sortedTables) {
+        const width = table.table_type === "ping_pong" ? 2 : Math.min(table.layout_w, maxCols)
+
+        // Check if current table fits in current row
+        if (currentCol + width > maxCols) {
+          // Move to next row
+          currentRow++
+          currentCol = 0
+        }
+
+        layout.push({
+          i: table.id,
+          x: currentCol,
+          y: currentRow,
+          w: width,
+          h: table.layout_h,
+        })
+
+        currentCol += width
+      }
+
+      return layout
     }
 
     return {
-      lg: tables.map((table) => ({
-        i: table.id,
-        x: table.layout_x,
-        y: table.layout_y,
-        w: table.table_type === "ping_pong" ? 2 : table.layout_w,
-        h: table.layout_h,
-      })),
-      md: tables.map((table) => ({
-        i: table.id,
-        x: table.layout_x,
-        y: table.layout_y,
-        w: table.table_type === "ping_pong" ? 2 : table.layout_w,
-        h: table.layout_h,
-      })),
-      sm: createLayoutForBreakpoint(6), // Small tablet
-      xs: createLayoutForBreakpoint(4), // Phone
-      xxs: createLayoutForBreakpoint(2), // Very small phone
+      lg: createCompactLayout(14, !isEditMode),
+      md: createCompactLayout(12, !isEditMode),
+      sm: createCompactLayout(6, !isEditMode),
+      xs: createCompactLayout(4, !isEditMode),
+      xxs: createCompactLayout(2, !isEditMode),
     }
-  }, [tables])
+  }, [tables, isEditMode])
 
   const onLayoutChange = (newLayout: Layout[], allLayouts: { [key: string]: Layout[] }) => {
     if (isEditMode) {
@@ -87,6 +111,7 @@ export default function CustomizableTableGrid() {
       draggableHandle=".drag-handle"
       margin={[4, 4]}
       containerPadding={[8, 8]}
+      compactType={isEditMode ? null : "vertical"}
     >
       {tables.map((table) => (
         <div key={table.id}>
