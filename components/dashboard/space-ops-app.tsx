@@ -1,11 +1,18 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import "@/styles/space-ops.css"
 import { useSupabase } from "../providers/supabase-provider"
 import { useTableStore } from "@/stores/table-store"
 import CustomizableTableGrid from "./customizable-table-grid"
 import StoreInitializer from "../providers/store-initializer"
 import type { Table, Session } from "@/lib/types"
+import DashboardView from "./dashboard-view"
+import AutomationsView from "./automations-view"
+import InventoryView from "./inventory-view"
+import TasksView from "./tasks-view"
+import ScheduleView from "./schedule-view"
+import SettingsView from "./settings-view"
 
 export type TableWithSessions = Table & { sessions: Session[] }
 
@@ -13,6 +20,8 @@ export default function SpaceOpsApp({ serverTables }: { serverTables: TableWithS
   const { supabase } = useSupabase()
   const { updateTable, updateSession } = useTableStore()
   const [route, setRoute] = useState("dashboard")
+  const [collapsed, setCollapsed] = useState(false)
+  const [dayStarted, setDayStarted] = useState(false)
 
   useEffect(() => {
     const channel = supabase
@@ -31,43 +40,63 @@ export default function SpaceOpsApp({ serverTables }: { serverTables: TableWithS
   }, [supabase, updateTable, updateSession])
 
   return (
-    <div className="flex h-screen bg-background text-foreground">
+    <div className="app">
       <StoreInitializer tables={serverTables} />
-      <aside className="w-60 border-r border-border p-4 flex flex-col gap-2">
-        <button
-          className={`text-left p-2 rounded hover:bg-accent ${route === "dashboard" ? "bg-accent" : ""}`}
-          onClick={() => setRoute("dashboard")}
-        >
-          Dashboard
-        </button>
-        <button
-          className={`text-left p-2 rounded hover:bg-accent ${route === "floor" ? "bg-accent" : ""}`}
-          onClick={() => setRoute("floor")}
-        >
-          Floor
-        </button>
-        <button className="text-left p-2 rounded hover:bg-accent" onClick={() => setRoute("automations")}>Automations</button>
-        <button className="text-left p-2 rounded hover:bg-accent" onClick={() => setRoute("inventory")}>Inventory</button>
-        <button className="text-left p-2 rounded hover:bg-accent" onClick={() => setRoute("tasks")}>Tasks</button>
-        <button className="text-left p-2 rounded hover:bg-accent" onClick={() => setRoute("schedule")}>Schedule</button>
-        <button className="text-left p-2 rounded hover:bg-accent" onClick={() => setRoute("settings")}>Settings</button>
+      <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
+        <button className="toggle-sidebar" onClick={() => setCollapsed(!collapsed)}>☰</button>
+        <div className="brand">
+          <div className="logo" onClick={() => setRoute("dashboard")}></div>
+          <h1>SPACE OPS</h1>
+        </div>
+        <div className="nav">
+          <button className={route === "dashboard" ? "active" : ""} onClick={() => setRoute("dashboard")}>🏠 <span className="label">Dashboard</span></button>
+          <button className={route === "floor" ? "active" : ""} onClick={() => setRoute("floor")}>🎯 <span className="label">Floor</span></button>
+          <button className={route === "automations" ? "active" : ""} onClick={() => setRoute("automations")}>⚙️ <span className="label">Automations</span></button>
+          <button className={route === "inventory" ? "active" : ""} onClick={() => setRoute("inventory")}>📦 <span className="label">Inventory</span></button>
+          <button className={route === "tasks" ? "active" : ""} onClick={() => setRoute("tasks")}>🗂️ <span className="label">Tasks</span></button>
+          <button className={route === "schedule" ? "active" : ""} onClick={() => setRoute("schedule")}>📅 <span className="label">Schedule</span></button>
+          <button className={route === "settings" ? "active" : ""} onClick={() => setRoute("settings")}>🛠️ <span className="label">Settings</span></button>
+        </div>
       </aside>
-      <section className="flex-1 flex flex-col">
-        <header className="p-4 border-b border-border flex items-center justify-between">
-          <div className="font-semibold">Space Ops</div>
-          <input
-            className="max-w-sm w-full ml-4 p-2 rounded bg-background border border-border"
-            placeholder="Search..."
-          />
-        </header>
-        <div className="flex-1 overflow-auto p-4">
-          {route === "dashboard" && <div className="text-muted-foreground">Dashboard coming soon</div>}
-          {route === "floor" && <CustomizableTableGrid />}
-          {route === "automations" && <div className="text-muted-foreground">Automations coming soon</div>}
-          {route === "inventory" && <div className="text-muted-foreground">Inventory coming soon</div>}
-          {route === "tasks" && <div className="text-muted-foreground">Tasks coming soon</div>}
-          {route === "schedule" && <div className="text-muted-foreground">Schedule coming soon</div>}
-          {route === "settings" && <div className="text-muted-foreground">Settings coming soon</div>}
+      <section className="main">
+        <div className="topbar">
+          <div className="search" role="search">
+            🔎 <input placeholder="Search..." aria-label="Search" />
+            <div className="search-buttons">
+              <button className="search-btn" title="Voice Search">🎤</button>
+              <button className="search-btn" title="Upload Image">📷</button>
+              <button className="search-btn" title="AI Mode">🤖</button>
+            </div>
+          </div>
+          <button className="btn ghost" onClick={() => document.body.classList.toggle("light")}>🌗 Theme</button>
+          <button className="btn">🔄 Sync</button>
+          <button className="btn primary" onClick={() => setDayStarted(!dayStarted)}>
+            {dayStarted ? "🌙 End Day" : "🌅 Start Day"}
+          </button>
+          <div className="avatar" onClick={() => setRoute("dashboard")}>S</div>
+        </div>
+        <div className="views">
+          <div className={`view ${route === "dashboard" ? "active" : ""}`} id="view-dashboard">
+            <DashboardView />
+          </div>
+          <div className={`view ${route === "floor" ? "active" : ""}`} id="view-floor">
+            <CustomizableTableGrid />
+          </div>
+          <div className={`view ${route === "automations" ? "active" : ""}`} id="view-automations">
+            <AutomationsView />
+          </div>
+          <div className={`view ${route === "inventory" ? "active" : ""}`} id="view-inventory">
+            <InventoryView />
+          </div>
+          <div className={`view ${route === "tasks" ? "active" : ""}`} id="view-tasks">
+            <TasksView />
+          </div>
+          <div className={`view ${route === "schedule" ? "active" : ""}`} id="view-schedule">
+            <ScheduleView />
+          </div>
+          <div className={`view ${route === "settings" ? "active" : ""}`} id="view-settings">
+            <SettingsView />
+          </div>
         </div>
       </section>
     </div>
