@@ -11,6 +11,7 @@ import InventoryView from "./inventory-view"
 import TasksView from "./tasks-view"
 import ScheduleView from "./schedule-view"
 import SettingsView from "./settings-view"
+import WeatherCard from "./weather-card"
 
 export type TableWithSessions = Table & { sessions: Session[] }
 
@@ -91,7 +92,11 @@ export default function SpaceOpsApp({ serverTables }: { serverTables: TableWithS
           />
         </header>
         <div className="flex-1 overflow-auto p-4">
-          {route === "dashboard" && <div className="text-muted-foreground">Dashboard coming soon</div>}
+          {route === "dashboard" && (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <WeatherCard />
+            </div>
+          )}
           {route === "floor" && <CustomizableTableGrid />}
           {route === "automations" && <AutomationsView />}
           {route === "inventory" && <InventoryView />}
