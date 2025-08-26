@@ -4,13 +4,9 @@ import { useState, useEffect } from "react"
 import { useSupabase } from "../providers/supabase-provider"
 import { useTableStore } from "@/stores/table-store"
 import CustomizableTableGrid from "./customizable-table-grid"
+import DashboardView from "./dashboard-view"
 import StoreInitializer from "../providers/store-initializer"
 import type { Table, Session } from "@/lib/types"
-import AutomationsView from "./automations-view"
-import InventoryView from "./inventory-view"
-import TasksView from "./tasks-view"
-import ScheduleView from "./schedule-view"
-import SettingsView from "./settings-view"
 
 export type TableWithSessions = Table & { sessions: Session[] }
 
@@ -51,36 +47,11 @@ export default function SpaceOpsApp({ serverTables }: { serverTables: TableWithS
         >
           Floor
         </button>
-        <button
-          className={`text-left p-2 rounded hover:bg-accent ${route === "automations" ? "bg-accent" : ""}`}
-          onClick={() => setRoute("automations")}
-        >
-          Automations
-        </button>
-        <button
-          className={`text-left p-2 rounded hover:bg-accent ${route === "inventory" ? "bg-accent" : ""}`}
-          onClick={() => setRoute("inventory")}
-        >
-          Inventory
-        </button>
-        <button
-          className={`text-left p-2 rounded hover:bg-accent ${route === "tasks" ? "bg-accent" : ""}`}
-          onClick={() => setRoute("tasks")}
-        >
-          Tasks
-        </button>
-        <button
-          className={`text-left p-2 rounded hover:bg-accent ${route === "schedule" ? "bg-accent" : ""}`}
-          onClick={() => setRoute("schedule")}
-        >
-          Schedule
-        </button>
-        <button
-          className={`text-left p-2 rounded hover:bg-accent ${route === "settings" ? "bg-accent" : ""}`}
-          onClick={() => setRoute("settings")}
-        >
-          Settings
-        </button>
+        <button className="text-left p-2 rounded hover:bg-accent" onClick={() => setRoute("automations")}>Automations</button>
+        <button className="text-left p-2 rounded hover:bg-accent" onClick={() => setRoute("inventory")}>Inventory</button>
+        <button className="text-left p-2 rounded hover:bg-accent" onClick={() => setRoute("tasks")}>Tasks</button>
+        <button className="text-left p-2 rounded hover:bg-accent" onClick={() => setRoute("schedule")}>Schedule</button>
+        <button className="text-left p-2 rounded hover:bg-accent" onClick={() => setRoute("settings")}>Settings</button>
       </aside>
       <section className="flex-1 flex flex-col">
         <header className="p-4 border-b border-border flex items-center justify-between">
@@ -91,13 +62,13 @@ export default function SpaceOpsApp({ serverTables }: { serverTables: TableWithS
           />
         </header>
         <div className="flex-1 overflow-auto p-4">
-          {route === "dashboard" && <div className="text-muted-foreground">Dashboard coming soon</div>}
+          {route === "dashboard" && <DashboardView />}
           {route === "floor" && <CustomizableTableGrid />}
-          {route === "automations" && <AutomationsView />}
-          {route === "inventory" && <InventoryView />}
-          {route === "tasks" && <TasksView />}
-          {route === "schedule" && <ScheduleView />}
-          {route === "settings" && <SettingsView />}
+          {route === "automations" && <div className="text-muted-foreground">Automations coming soon</div>}
+          {route === "inventory" && <div className="text-muted-foreground">Inventory coming soon</div>}
+          {route === "tasks" && <div className="text-muted-foreground">Tasks coming soon</div>}
+          {route === "schedule" && <div className="text-muted-foreground">Schedule coming soon</div>}
+          {route === "settings" && <div className="text-muted-foreground">Settings coming soon</div>}
         </div>
       </section>
     </div>
