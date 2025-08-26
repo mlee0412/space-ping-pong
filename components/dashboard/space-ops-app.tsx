@@ -95,6 +95,9 @@ export default function SpaceOpsApp({ serverTables }: { serverTables: TableWithS
           {route === "dashboard" && (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <WeatherCard />
+              <div className="rounded-lg border border-border p-4 text-muted-foreground flex items-center justify-center">
+                Dashboard coming soon
+              </div>
             </div>
           )}
           {route === "floor" && <CustomizableTableGrid />}
