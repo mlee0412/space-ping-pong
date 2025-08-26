@@ -1,11 +1,14 @@
 "use client"
 
+import { Card } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+
 export default function DashboardView() {
   return (
     <div className="grid gap-4">
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-lg border bg-card p-4">
+        <Card className="glass-card p-4">
           <h3 className="mb-2 text-sm font-medium">Weather</h3>
           <div className="flex items-center gap-3">
             <span className="text-2xl">☀️</span>
@@ -14,78 +17,124 @@ export default function DashboardView() {
               <span className="text-sm text-muted-foreground">Clear skies</span>
             </div>
           </div>
-        </div>
-        <div className="rounded-lg border bg-card p-4">
+        </Card>
+        <Card className="glass-card p-4">
           <h3 className="mb-2 text-sm font-medium">Active Tables</h3>
           <div className="text-2xl font-bold">7</div>
           <div className="text-sm text-muted-foreground">+2 since 1 hr ago</div>
-        </div>
-        <div className="rounded-lg border bg-card p-4">
+        </Card>
+        <Card className="glass-card p-4">
           <h3 className="mb-2 text-sm font-medium">Avg Session</h3>
           <div className="text-2xl font-bold">01:12</div>
           <div className="text-sm text-muted-foreground">All activities</div>
-        </div>
-        <div className="rounded-lg border bg-card p-4">
+        </Card>
+        <Card className="glass-card p-4">
           <h3 className="mb-2 text-sm font-medium">Revenue Today</h3>
           <div className="text-2xl font-bold">$4,820</div>
           <div className="text-sm text-muted-foreground">Target $6,500</div>
-        </div>
+        </Card>
       </div>
 
       {/* Quick Actions + Recent Activity */}
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-lg border bg-card p-4">
+        <Card className="glass-card p-4">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <h3 className="font-medium">Quick Actions</h3>
             <div className="flex gap-2" role="tablist">
-              <button className="rounded-full bg-accent px-3 py-1 text-sm">🏓 Ping Pong</button>
-              <button className="rounded-full px-3 py-1 text-sm hover:bg-accent">⛳ iGolf</button>
-              <button className="rounded-full px-3 py-1 text-sm hover:bg-accent">🎤 Karaoke</button>
-              <button className="rounded-full px-3 py-1 text-sm hover:bg-accent">🎱 Billiards</button>
+              <Button size="sm" className="rounded-full bg-accent px-3 py-1 text-sm hover:bg-accent">
+                🏓 Ping Pong
+              </Button>
+              <Button size="sm" variant="ghost" className="rounded-full px-3 py-1 text-sm hover:bg-accent">
+                ⛳ iGolf
+              </Button>
+              <Button size="sm" variant="ghost" className="rounded-full px-3 py-1 text-sm hover:bg-accent">
+                🎤 Karaoke
+              </Button>
+              <Button size="sm" variant="ghost" className="rounded-full px-3 py-1 text-sm hover:bg-accent">
+                🎱 Billiards
+              </Button>
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            <button className="rounded-md border px-4 py-2 text-sm">➕ Start Session</button>
-            <button className="rounded-md border px-4 py-2 text-sm">📅 Schedule</button>
-            <button className="rounded-md border px-4 py-2 text-sm">📝 Order Form</button>
-            <button className="rounded-md border px-4 py-2 text-sm">🎵 Play Vibe</button>
+            <Button variant="outline" size="sm">
+              ➕ Start Session
+            </Button>
+            <Button variant="outline" size="sm">
+              📅 Schedule
+            </Button>
+            <Button variant="outline" size="sm">
+              📝 Order Form
+            </Button>
+            <Button variant="outline" size="sm">
+              🎵 Play Vibe
+            </Button>
           </div>
-        </div>
+        </Card>
 
-        <div className="rounded-lg border bg-card p-4">
+        <Card className="glass-card p-4">
           <h3 className="mb-4 font-medium">Recent Activity</h3>
           <div className="grid gap-2">
             <div className="flex items-center justify-between rounded-md border p-2">
               <span>Table P2 session started</span>
-              <button className="rounded-md border px-2 py-1 text-sm">👁️</button>
+              <Button variant="outline" size="sm">
+                👁️
+              </Button>
             </div>
             <div className="flex items-center justify-between rounded-md border p-2">
               <span>Spotify playlist changed</span>
-              <button className="rounded-md border px-2 py-1 text-sm">👁️</button>
+              <Button variant="outline" size="sm">
+                👁️
+              </Button>
             </div>
             <div className="flex items-center justify-between rounded-md border p-2">
               <span>New reservation: Kim Davis</span>
-              <button className="rounded-md border px-2 py-1 text-sm">👁️</button>
+              <Button variant="outline" size="sm">
+                👁️
+              </Button>
             </div>
             <div className="flex items-center justify-between rounded-md border p-2">
               <span>Low inventory alert: Pool Cue Tips</span>
-              <button className="rounded-md border px-2 py-1 text-sm">👁️</button>
+              <Button variant="outline" size="sm">
+                👁️
+              </Button>
             </div>
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Today's Reservations */}
-      <div className="rounded-lg border bg-card p-4">
+      <Card className="glass-card p-4">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <h3 className="font-medium">Today's Reservations</h3>
-          <button className="rounded-md border px-3 py-1 text-sm">📅 Pull from Google Calendar</button>
+          <Button variant="outline" size="sm" className="px-3 py-1">
+            📅 Pull from Google Calendar
+          </Button>
         </div>
         <div className="mb-4 flex flex-wrap gap-2">
-          <button className="rounded-md bg-accent px-3 py-1 text-sm">🏓 Ping Pong</button>
-          <button className="rounded-md px-3 py-1 text-sm hover:bg-accent">⛳ iGolf</button>
-          <button className="rounded-md px-3 py-1 text-sm hover:bg-accent">🎤 Karaoke</button>
-          <button className="rounded-md px-3 py-1 text-sm hover:bg-accent">🎱 Billiards</button>
+          <Button size="sm" className="rounded-md bg-accent px-3 py-1 text-sm">
+            🏓 Ping Pong
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="rounded-md px-3 py-1 text-sm hover:bg-accent"
+          >
+            ⛳ iGolf
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="rounded-md px-3 py-1 text-sm hover:bg-accent"
+          >
+            🎤 Karaoke
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="rounded-md px-3 py-1 text-sm hover:bg-accent"
+          >
+            🎱 Billiards
+          </Button>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -107,7 +156,9 @@ export default function DashboardView() {
                 <td className="p-2">Walk-in</td>
                 <td className="p-2">Table 4 requested</td>
                 <td className="p-2">
-                  <button className="rounded-md border px-2 py-1 text-sm">✏️</button>
+                  <Button variant="outline" size="sm">
+                    ✏️
+                  </Button>
                 </td>
               </tr>
               <tr className="border-t">
@@ -117,7 +168,9 @@ export default function DashboardView() {
                 <td className="p-2">Online</td>
                 <td className="p-2">Birthday party</td>
                 <td className="p-2">
-                  <button className="rounded-md border px-2 py-1 text-sm">✏️</button>
+                  <Button variant="outline" size="sm">
+                    ✏️
+                  </Button>
                 </td>
               </tr>
               <tr className="border-t">
@@ -127,14 +180,15 @@ export default function DashboardView() {
                 <td className="p-2">Member</td>
                 <td className="p-2">VIP member</td>
                 <td className="p-2">
-                  <button className="rounded-md border px-2 py-1 text-sm">✏️</button>
+                  <Button variant="outline" size="sm">
+                    ✏️
+                  </Button>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
-      </div>
+      </Card>
     </div>
   )
 }
-
