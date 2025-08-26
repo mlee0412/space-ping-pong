@@ -2,37 +2,20 @@
 
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import WeatherCard from "./weather-card"
+import ActiveTablesCard from "./active-tables-card"
+import AvgSessionCard from "./avg-session-card"
+import RevenueCard from "./revenue-card"
 
 export default function DashboardView() {
   return (
     <div className="grid gap-4">
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="glass-card p-4">
-          <h3 className="mb-2 text-sm font-medium">Weather</h3>
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">☀️</span>
-            <div className="flex flex-col">
-              <span className="text-xl font-bold">72°F</span>
-              <span className="text-sm text-muted-foreground">Clear skies</span>
-            </div>
-          </div>
-        </Card>
-        <Card className="glass-card p-4">
-          <h3 className="mb-2 text-sm font-medium">Active Tables</h3>
-          <div className="text-2xl font-bold">7</div>
-          <div className="text-sm text-muted-foreground">+2 since 1 hr ago</div>
-        </Card>
-        <Card className="glass-card p-4">
-          <h3 className="mb-2 text-sm font-medium">Avg Session</h3>
-          <div className="text-2xl font-bold">01:12</div>
-          <div className="text-sm text-muted-foreground">All activities</div>
-        </Card>
-        <Card className="glass-card p-4">
-          <h3 className="mb-2 text-sm font-medium">Revenue Today</h3>
-          <div className="text-2xl font-bold">$4,820</div>
-          <div className="text-sm text-muted-foreground">Target $6,500</div>
-        </Card>
+        <WeatherCard />
+        <ActiveTablesCard />
+        <AvgSessionCard />
+        <RevenueCard />
       </div>
 
       {/* Quick Actions + Recent Activity */}
