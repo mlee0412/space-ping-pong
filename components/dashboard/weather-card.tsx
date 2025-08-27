@@ -45,14 +45,17 @@ export default function WeatherCard() {
 
         // Get user's location
         const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-          navigator.geolocation.getCurrentPosition(resolve, reject)
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+          })
         })
 
         const { latitude, longitude } = position.coords
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
 
         // Fetch current weather and forecast
         const response = await fetch(
-          `/api/weather?lat=${latitude}&lon=${longitude}`
+          `/api/weather?lat=${latitude}&lon=${longitude}&tz=${encodeURIComponent(tz)}`
         )
 
         if (!response.ok) {
@@ -66,6 +69,21 @@ export default function WeatherCard() {
         setError("Unable to load weather data")
         
         // Set default fallback data
+        const now = new Date()
+        const fallbackHours = Array.from({ length: 3 }, (_, i) => {
+          const time = new Date(now.getTime() + (i + 1) * 60 * 60 * 1000)
+          return {
+            time: time.toLocaleTimeString("en-US", {
+              hour: "numeric",
+              hour12: true,
+              timeZone: "America/New_York",
+            }),
+            temp: 72 + i * 2,
+            icon: "01d",
+            description: "Clear",
+          }
+        })
+
         setWeather({
           location: { name: "New York", country: "US" },
           current: {
@@ -76,17 +94,13 @@ export default function WeatherCard() {
             icon: "01d",
             humidity: 45,
             wind_speed: 8,
-            visibility: 10
+            visibility: 10,
           },
           daily: {
             temp_min: 65,
-            temp_max: 78
+            temp_max: 78,
           },
-          hourly: [
-            { time: "12:00", temp: 72, icon: "01d", description: "Clear" },
-            { time: "13:00", temp: 74, icon: "01d", description: "Clear" },
-            { time: "14:00", temp: 75, icon: "02d", description: "Partly cloudy" }
-          ]
+          hourly: fallbackHours,
         })
       } finally {
         setLoading(false)
