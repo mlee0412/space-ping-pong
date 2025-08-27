@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams
     const lat = searchParams.get("lat")
     const lon = searchParams.get("lon")
+    const tz = searchParams.get("tz") || "America/New_York"
 
     if (!lat || !lon) {
       return NextResponse.json(
@@ -38,11 +39,53 @@ export async function GET(request: NextRequest) {
 
     const forecast = await forecastResponse.json()
 
+    // Reverse geocode for more precise location name
+    let locationName = currentWeather.name
+    let countryCode = currentWeather.sys.country
+    try {
+      const geoResponse = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`,
+        {
+          headers: {
+            "User-Agent": "space-ping-pong/1.0",
+          },
+        }
+      )
+      if (geoResponse.ok) {
+        const geoData = await geoResponse.json()
+        locationName =
+          geoData.address?.neighbourhood ||
+          geoData.address?.suburb ||
+          geoData.address?.city ||
+          locationName
+        countryCode = geoData.address?.country_code
+          ? geoData.address.country_code.toUpperCase()
+          : countryCode
+      }
+    } catch (e) {
+      // ignore geocode errors
+    }
+
+    // Select next three future forecasts
+    const nextThree = forecast.list
+      .filter((item: any) => item.dt > currentWeather.dt)
+      .slice(0, 3)
+      .map((item: any) => ({
+        time: new Date(item.dt * 1000).toLocaleTimeString("en-US", {
+          hour: "numeric",
+          hour12: true,
+          timeZone: tz,
+        }),
+        temp: item.main.temp,
+        icon: item.weather[0].icon,
+        description: item.weather[0].main,
+      }))
+
     // Process the data
     const weatherData = {
       location: {
-        name: currentWeather.name,
-        country: currentWeather.sys.country,
+        name: locationName,
+        country: countryCode,
       },
       current: {
         temp: currentWeather.main.temp,
@@ -61,15 +104,7 @@ export async function GET(request: NextRequest) {
         temp_min: currentWeather.main.temp_min,
         temp_max: currentWeather.main.temp_max,
       },
-      hourly: forecast.list.slice(0, 3).map((item: any) => ({
-        time: new Date(item.dt * 1000).toLocaleTimeString("en-US", {
-          hour: "numeric",
-          hour12: true,
-        }),
-        temp: item.main.temp,
-        icon: item.weather[0].icon,
-        description: item.weather[0].main,
-      })),
+      hourly: nextThree,
     }
 
     return NextResponse.json(weatherData)
